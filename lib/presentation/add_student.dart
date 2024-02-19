@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:student_log_getx/data/models/student_model.dart';
 import 'package:student_log_getx/presentation/home_page.dart';
 import 'package:student_log_getx/presentation/utilities/validators.dart';
-import 'package:student_log_getx/presentation/view_data.dart';
+import 'package:student_log_getx/presentation/student_list.dart';
 import 'package:student_log_getx/services/db_functions.dart';
 import 'package:student_log_getx/services/student_helper.dart';
 
@@ -72,251 +72,293 @@ class _AddStudentPageState extends State<AddStudentPage> {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(20.0),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Obx(() {
-                  return GestureDetector(
-                    onTap: () async {
-                      controller.getImage();
-                    },
-                    child: Container(
-                        height: 180,
-                        width: 180,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            border: Border.all(width: 1)),
-                        child: ClipOval(
-                          // ignore: unrelated_type_equality_checks
-                          child: controller.profileImage != ""
-                              ? Image.file(
-                                  File(controller.profileImage.toString()),
-                                  filterQuality: FilterQuality.high,
-                                  fit: BoxFit.contain,
-                                )
-                              : Icon(Icons.add_photo_alternate_outlined),
-                        )),
-                  );
-                }),
-                SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  controller: _nameController,
-                  validator: Validators.validateFullName,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide:
-                          BorderSide(color: Colors.grey.shade400, width: 1.0),
-                    ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Obx(() {
+                return GestureDetector(
+                  onTap: () async {
+                    controller.getImage();
+                  },
+                  child: Container(
+                      height: 180,
+                      width: 180,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(width: 1)),
+                      child: ClipOval(
+                        // ignore: unrelated_type_equality_checks
+                        child: controller.profileImage != ""
+                            ? Image.file(
+                                File(controller.profileImage.toString()),
+                                filterQuality: FilterQuality.high,
+                                fit: BoxFit.contain,
+                              )
+                            : Icon(Icons.add_photo_alternate_outlined),
+                      )),
+                );
+              }),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: _nameController,
+                validator: Validators.validateFullName,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade400, width: 1.0),
                   ),
                 ),
-                SizedBox(height: 20.0),
-                TextFormField(
-                  controller: _emailController,
-                  validator: Validators.validateEmail,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide:
-                          BorderSide(color: Colors.grey.shade400, width: 1.0),
-                    ),
+              ),
+              SizedBox(height: 20.0),
+              TextFormField(
+                controller: _emailController,
+                validator: Validators.validateEmail,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade400, width: 1.0),
                   ),
                 ),
-                SizedBox(height: 20.0),
-                TextFormField(
-                  controller: _mobileController,
-                  validator: Validators.validateMobile,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                    labelText: 'Mobile',
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide:
-                          BorderSide(color: Colors.grey.shade400, width: 1.0),
-                    ),
+              ),
+              SizedBox(height: 20.0),
+              TextFormField(
+                controller: _mobileController,
+                validator: Validators.validateMobile,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  labelText: 'Mobile',
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade400, width: 1.0),
                   ),
                 ),
-                SizedBox(height: 20.0),
-                Text(
-                  'Gender',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              SizedBox(height: 20.0),
+              Text(
+                'Gender',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 10.0),
-                Obx(
-                  () => Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: gender.map((String value1) {
-                            return Container(
-                              margin: const EdgeInsets.only(right: 8.0),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    value1,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                    ),
+              ),
+              SizedBox(height: 10.0),
+              Obx(
+                () => Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: gender.map((String value1) {
+                          return Container(
+                            margin: const EdgeInsets.only(right: 8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  value1,
+                                  style: const TextStyle(
+                                    fontSize: 12,
                                   ),
-                                  Radio(
-                                    value: value1,
-                                    groupValue: controller.gender!.value,
-                                    onChanged: (selectedValue) {
-                                      selGender = selectedValue.toString();
-                                      controller.getGender(selGender);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
+                                ),
+                                Radio(
+                                  value: value1,
+                                  groupValue: controller.gender!.value,
+                                  onChanged: (selectedValue) {
+                                    selGender = selectedValue.toString();
+                                    controller.getGender(selGender);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0),
+              Text(
+                'Domain:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10.0),
+              DropdownButtonFormField(
+                  // value: controller.domain?.value, // exception happening!!
+                  validator: (value) {
+                    if (value == null) {
+                      return "select Domain";
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                      hintText: 'Domain',
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              color: Color.fromRGBO(117, 185, 237, 1)),
+                          borderRadius: BorderRadius.circular(10.0)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(width: 1, color: Colors.black),
+                          borderRadius: BorderRadius.circular(10.0))),
+                  items: domainList.map((String domain) {
+                    return DropdownMenuItem(value: domain, child: Text(domain));
+                  }).toList(),
+                  onChanged: (String? domain) {
+                    controller.getDomain(domain!);
+                  }),
+              SizedBox(height: 20.0),
+              Column(
+                children: [
+                  Text("Date Of Birth",
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10.0),
+                  Obx(
+                    () => Container(
+                      width: 180,
+                      child: TextButton(
+                        onPressed: () {
+                          showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1973),
+                            lastDate: DateTime(2025),
+                          ).then((value) => controller.getDOB(value!));
+                        },
+                        style: ButtonStyle(
+                          overlayColor: MaterialStateColor.resolveWith(
+                            (states) =>
+                                Colors.transparent, // Remove overlay color
+                          ),
+                          side: MaterialStateBorderSide.resolveWith(
+                            (states) => const BorderSide(
+                                color: Colors.grey), // Add outline border
+                          ),
+                          padding: MaterialStateProperty.resolveWith(
+                            (states) => const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12), // Add padding
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Add rounded corners
+                            ),
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                Text(
-                  'Domain:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10.0),
-                DropdownButtonFormField(
-                    validator: (value) {
-                      if (value == null) {
-                        return "select Domain";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                        hintText: 'Domain',
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                width: 1,
-                                color: Color.fromRGBO(117, 185, 237, 1)),
-                            borderRadius: BorderRadius.circular(10.0)),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(width: 1, color: Colors.black),
-                            borderRadius: BorderRadius.circular(10.0))),
-                    items: domainList.map((String domain) {
-                      return DropdownMenuItem(
-                          value: domain, child: Text(domain));
-                    }).toList(),
-                    onChanged: (String? domain) {
-                      controller.getDomain(domain!);
-                    }),
-                SizedBox(height: 20.0),
-                Column(
-                  children: [
-                    Text("Date Of Birth",
-                        style:
-                            GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10.0),
-                    Obx(
-                      () => Container(
-                        width: 180,
-                        child: TextButton(
-                          onPressed: () {
-                            showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1973),
-                              lastDate: DateTime(2025),
-                            ).then((value) => controller.getDOB(value!));
-                          },
-                          style: ButtonStyle(
-                            overlayColor: MaterialStateColor.resolveWith(
-                              (states) =>
-                                  Colors.transparent, // Remove overlay color
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_today_outlined,
+                              color: Colors.blue, // Customize icon color
                             ),
-                            side: MaterialStateBorderSide.resolveWith(
-                              (states) => const BorderSide(
-                                  color: Colors.grey), // Add outline border
-                            ),
-                            padding: MaterialStateProperty.resolveWith(
-                              (states) => const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12), // Add padding
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    10.0), // Add rounded corners
+                            const SizedBox(
+                                width:
+                                    8), // Add some spacing between icon and text
+                            Text(
+                              DateFormat('dd-MM-yyyy').format(
+                                DateTime.parse(
+                                    controller.dateOfBirth.toString()),
+                              ),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black, // Customize text color
                               ),
                             ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.calendar_today_outlined,
-                                color: Colors.blue, // Customize icon color
-                              ),
-                              const SizedBox(
-                                  width:
-                                      8), // Add some spacing between icon and text
-                              Text(
-                                DateFormat('dd-MM-yyyy').format(
-                                  DateTime.parse(
-                                      controller.dateOfBirth.toString()),
-                                ),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black, // Customize text color
-                                ),
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                widget.isEdit
-                    ? ElevatedButton.icon(
-                        onPressed: () {
-                          edit(db = DateTime.parse(
-                              controller.dateOfBirth.toString()));
-                        },
-                        icon: const Icon(Icons.update),
-                        label: const Text("Update"))
-                    : ElevatedButton.icon(
-                        onPressed: () {
-                          submit(db = DateTime.parse(
-                              controller.dateOfBirth.toString()));
-                        },
-                        icon: const Icon(Icons.save),
-                        label: const Text("Register"))
-              ],
-            ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              widget.isEdit
+                  ? ElevatedButton.icon(
+                      onPressed: () {
+                        edit(db =
+                            DateTime.parse(controller.dateOfBirth.toString()));
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.deepPurple),
+                        elevation: MaterialStateProperty.all<double>(3),
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                        ),
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                          EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 40.0),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.update,
+                        color: Colors.white,
+                        size: 25,
+                      ),
+                      label: Text(
+                        "Update",
+                        style: GoogleFonts.poppins(
+                            fontSize: 22,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ))
+                  : ElevatedButton.icon(
+                      onPressed: () {
+                        submit(db =
+                            DateTime.parse(controller.dateOfBirth.toString()));
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.deepPurple),
+                        elevation: MaterialStateProperty.all<double>(3),
+                        shape: MaterialStateProperty.all<OutlinedBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                        ),
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                          EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 40.0),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.save,
+                        color: Colors.white,
+                        size: 25,
+                      ),
+                      label: Text("Register",
+                          style: GoogleFonts.poppins(
+                              fontSize: 22,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)))
+            ],
           ),
         ),
       ),

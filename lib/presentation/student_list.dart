@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:async';
 import 'dart:io';
 
@@ -10,6 +12,7 @@ import 'package:intl/intl.dart';
 
 import 'package:student_log_getx/data/models/student_model.dart';
 import 'package:student_log_getx/presentation/add_student.dart';
+import 'package:student_log_getx/presentation/home_page.dart';
 import 'package:student_log_getx/services/db_functions.dart';
 
 class StudentList extends StatefulWidget {
@@ -36,13 +39,19 @@ class _StudentListState extends State<StudentList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("student list"),
-      ),
+          title: const Text("student list"),
+          leading: IconButton(
+              onPressed: () {
+                Get.off(HomePage());
+              },
+              icon: Icon(
+                Icons.arrow_back,
+              ))),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(15, 0, 15, 25),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: TextFormField(
                 controller: SearchController,
                 onChanged: (value) {
@@ -117,16 +126,24 @@ class _StudentListState extends State<StudentList> {
                                   radius: 40,
                                   backgroundImage: FileImage(File(data.photo)),
                                 ),
-                                title: Text(data.name),
-                                subtitle: Text(data.domain),
+                                title: Text(
+                                  data.name,
+                                  style: GoogleFonts.dmMono(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(
+                                  data.domain,
+                                  style: GoogleFonts.dmMono(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.normal),
+                                  maxLines: 1,
+                                ),
                               ),
                             );
                           }),
                           separatorBuilder: ((context, index) {
-                            return const Padding(
-                              padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                              child: Divider(),
-                            );
+                            return Divider();
                           }),
                           itemCount: controller.studentList.length),
                     ),
@@ -139,57 +156,60 @@ class _StudentListState extends State<StudentList> {
 
   void detailsSheet(BuildContext context, int id, String photo, String name,
       String gender, String domain, String dob, String mobile, String email) {
-    Get.bottomSheet(
-      Card(
-        elevation: 10,
-        margin: const EdgeInsets.all(15),
-        shadowColor: Colors.blueAccent,
-        shape:
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(70)),
+    Get.bottomSheet(Container(
+      height: 350,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 5,
-            ),
             CircleAvatar(
               radius: 40,
               backgroundImage: FileImage(File(photo)),
             ),
-            // Text("id: $id"),
+            const SizedBox(height: 10),
             Text(
-              "Name : $name",
+              "Name: $name",
               style: textStyle(),
             ),
             Text(
-              "Gender : $gender",
+              "Gender: $gender",
               style: textStyle(),
             ),
             Text(
-              "Domain : $domain",
+              "Domain: $domain",
               style: textStyle(),
             ),
             Text(
-              "Date of birth : ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(dob))}",
+              "Date of Birth: ${DateFormat('dd-MMM-yyyy').format(DateTime.parse(dob))}",
               style: textStyle(),
             ),
             Text(
-              "Mobile : $mobile",
+              "Mobile: $mobile",
               style: textStyle(),
             ),
             Text(
-              "Email : $email",
+              "Email: $email",
               style: textStyle(),
             ),
-
-            const SizedBox(
-              height: 10,
-            )
           ],
         ),
       ),
-    );
+    ));
   }
 
   onSearchChange(String value) {
@@ -209,5 +229,7 @@ class _StudentListState extends State<StudentList> {
     });
   }
 
-  TextStyle textStyle() => GoogleFonts.roboto(fontSize: 18);
+  TextStyle textStyle() {
+    return GoogleFonts.dmMono(fontSize: 22);
+  }
 }

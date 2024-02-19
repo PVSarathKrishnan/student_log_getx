@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:student_log_getx/presentation/add_student.dart';
-import 'package:student_log_getx/presentation/view_data.dart';
+import 'package:student_log_getx/presentation/student_list.dart';
 import 'package:student_log_getx/services/db_functions.dart';
 
 class HomePage extends StatefulWidget {
