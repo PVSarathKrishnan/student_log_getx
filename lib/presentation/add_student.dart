@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:student_log_getx/data/models/student_model.dart';
 import 'package:student_log_getx/presentation/home_page.dart';
 import 'package:student_log_getx/presentation/utilities/validators.dart';
+import 'package:student_log_getx/presentation/view_data.dart';
 import 'package:student_log_getx/services/db_functions.dart';
 import 'package:student_log_getx/services/student_helper.dart';
 
@@ -24,19 +25,12 @@ class AddStudentPage extends StatefulWidget {
 
 class _AddStudentPageState extends State<AddStudentPage> {
   DbFunctions dbhelper = DbFunctions();
-
   final _formKey = GlobalKey<FormState>();
-
   final _nameController = TextEditingController();
-
   final _mobileController = TextEditingController();
-
   final _emailController = TextEditingController();
-
   final gender = ['male', 'female', 'others'];
-
   String selGender = '';
-
   final domainList = [
     'MERN - web development',
     'MEAN - web development',
@@ -45,17 +39,13 @@ class _AddStudentPageState extends State<AddStudentPage> {
     'Data Science',
     'Cyber security'
   ];
-
   String selDomain = '';
-
-  File? _selectedImage;
-
   DateTime dob = DateTime.now();
-
   String? d;
-
   DateTime? db;
+
   final controller = Get.put(StudentGetX());
+
   @override
   Widget build(BuildContext context) {
     if (widget.isEdit) {
@@ -69,10 +59,15 @@ class _AddStudentPageState extends State<AddStudentPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Add Student',
-          style: GoogleFonts.b612Mono(),
-        ),
+        title: widget.isEdit
+            ? Text(
+                'Edit Student',
+                style: GoogleFonts.b612Mono(),
+              )
+            : Text(
+                'Add Student',
+                style: GoogleFonts.b612Mono(),
+              ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -95,6 +90,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
                             borderRadius: BorderRadius.circular(100),
                             border: Border.all(width: 1)),
                         child: ClipOval(
+                          // ignore: unrelated_type_equality_checks
                           child: controller.profileImage != ""
                               ? Image.file(
                                   File(controller.profileImage.toString()),
@@ -302,46 +298,37 @@ class _AddStudentPageState extends State<AddStudentPage> {
                   ],
                 ),
                 SizedBox(
-                  height: 60,
+                  height: 20,
                 ),
+                widget.isEdit
+                    ? ElevatedButton.icon(
+                        onPressed: () {
+                          edit(db = DateTime.parse(
+                              controller.dateOfBirth.toString()));
+                        },
+                        icon: const Icon(Icons.update),
+                        label: const Text("Update"))
+                    : ElevatedButton.icon(
+                        onPressed: () {
+                          submit(db = DateTime.parse(
+                              controller.dateOfBirth.toString()));
+                        },
+                        icon: const Icon(Icons.save),
+                        label: const Text("Register"))
               ],
             ),
           ),
-        ),
-      ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          widget.isEdit
-              ? edit(d = controller.domain.toString(),
-                  db = DateTime.parse(controller.dateOfBirth.toString()))
-              : submit(d = controller.domain.toString(),
-                  db = DateTime.parse(controller.dateOfBirth.toString()));
-        },
-        label: Text(
-          'Submit',
-          style: GoogleFonts.ptMono(
-            fontSize: 22,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-        elevation: 18,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25.0),
         ),
       ),
     );
   }
 
 // ...
-  Future<void> submit(String? d, DateTime? db) async {
+  Future<void> submit(DateTime? db) async {
     var imagePath = controller.profileImage!.value;
     final name = _nameController.text.trim();
     var gender = controller.gender!.value;
-    final domain = d;
+    final domain = controller.domain!.value;
     final dob = db?.toString();
     final mobile = _mobileController.text.trim();
     final email = _emailController.text.trim();
@@ -361,7 +348,7 @@ class _AddStudentPageState extends State<AddStudentPage> {
         controller.profileImage?.value = '';
         controller.gender?.value = '';
         Get.snackbar("Successful", "Student registered");
-        Get.to(HomePage());
+        Get.off(const HomePage());
       } else {
         Get.snackbar("Error", "Not registered");
       }
@@ -370,23 +357,38 @@ class _AddStudentPageState extends State<AddStudentPage> {
     }
   }
 
-//to update
-  Future<void> edit(String? d, DateTime? db) async {
+  Future<void> edit(DateTime? db) async {
     int? id = widget.stu!.id;
-    final imagePath = _selectedImage?.path;
+    final imagePath = controller.profileImage?.value;
     final name = _nameController.text.trim();
-    final gender = selGender;
-    final domain = d;
+    final gender = controller.gender!.value;
+    final domain = controller.domain!.value;
     final dob = db?.toString();
     final mobile = _mobileController.text.trim();
     final email = _emailController.text.trim();
 
+    print('ImagePath: $imagePath');
+    print('DOB: $domain');
+    print('email: $email');
+    print('name: $name');
+    print('id: $id');
+    print('g: $gender');
+    print('dob: $dob');
+    print('mob: $mobile');
+
     if (_formKey.currentState?.validate() ?? false) {
-      if (imagePath != null && dob != null && gender != null) {
+      if (imagePath != null &&
+          name.isNotEmpty &&
+          gender.isNotEmpty &&
+          domain != null &&
+          dob != null &&
+          mobile.isNotEmpty &&
+          email.isNotEmpty) {
         dbhelper.editStudent(
-            id!, imagePath, name, gender, domain!, dob, mobile, email);
+            id!, imagePath, name, gender, domain, dob, mobile, email);
+        Get.off(const StudentList());
       } else {
-        Get.snackbar("Error", "Add all data");
+        Get.snackbar("Error", "Enter all data");
       }
     } else {
       Get.snackbar("Error", "Add all data ");

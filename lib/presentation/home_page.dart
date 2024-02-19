@@ -1,8 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:student_log_getx/presentation/add_student.dart';
+import 'package:student_log_getx/presentation/view_data.dart';
+import 'package:student_log_getx/services/db_functions.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,6 +16,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    controller.getStudents();
+    super.initState();
+  }
+
+  final controller = Get.put(DbFunctions());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +74,9 @@ class _HomePageState extends State<HomePage> {
             Container(
                 width: 250,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(const StudentList());
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color.fromARGB(255, 0, 0, 0)),
